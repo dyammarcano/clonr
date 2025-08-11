@@ -18,9 +18,13 @@ func CloneRepo(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("repository URL cannot be empty")
 	}
 
-	pathStr := args[1]
+	pathStr := "."
 
-	if pathStr == "" {
+	if len(args) > 1 {
+		pathStr = args[1]
+	}
+
+	if pathStr == "." || pathStr == "./" {
 		wd, err := os.Getwd()
 		if err != nil {
 			return fmt.Errorf("error getting current working directory: %w", err)
