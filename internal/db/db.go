@@ -30,15 +30,20 @@ func InitDB() (*Database, error) {
 
 func (d *Database) SaveRepo(url, path string) error {
 	repo := model.Repository{
-		URL:      url,
-		Path:     path,
-		ClonedAt: time.Now(),
+		URL:       url,
+		Path:      path,
+		ClonedAt:  time.Now(),
+		UpdatedAt: time.Now(),
 	}
-	return d.DB.Create(&repo).Error
+	return d.Create(&repo).Error
 }
 
 func (d *Database) GetAllRepos() ([]model.Repository, error) {
 	var repos []model.Repository
-	err := d.DB.Find(&repos).Error
+	err := d.Find(&repos).Error
 	return repos, err
+}
+
+func (d *Database) RemoveRepoByURL(url string) error {
+	return d.Where("url = ?", url).Delete(&model.Repository{}).Error
 }

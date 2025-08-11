@@ -1,0 +1,82 @@
+package cmd
+
+import (
+	"fmt"
+	"strings"
+
+	"clonr/internal/git"
+
+	"github.com/AlecAivazis/survey/v2"
+	"github.com/spf13/cobra"
+)
+
+var removeCmd = &cobra.Command{
+	Use:   "remove",
+	Short: "Quitar repositorios del registro (sin borrar archivos)",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		list, err := git.ListRepos()
+		if err != nil {
+			return err
+		}
+
+		if len(list) == 0 {
+			_, _ = fmt.Fprintln(cmd.OutOrStdout(), "No hay repositorios registrados.")
+			return nil
+		}
+
+		options := make([]string, len(list))
+		for i, r := range list {
+			options[i] = fmt.Sprintf("%s -> %s", r.URL, r.Path)
+		}
+
+		var selected []string
+
+		prompt := &survey.MultiSelect{
+			Message: "Selecciona los repositorios a eliminar del registro:",
+			Options: options,
+		}
+
+		if err = survey.AskOne(prompt, &selected); err != nil {
+			return err
+		}
+
+		if len(selected) == 0 {
+			_, _ = fmt.Fprintln(cmd.OutOrStdout(), "No se seleccionó ningún repositorio.")
+			return nil
+		}
+
+		confirm := false
+		promptConfirm := &survey.Confirm{
+			Message: fmt.Sprintf("Seguro quieres eliminar %d repositorios del registro?", len(selected)),
+		}
+
+		if err = survey.AskOne(promptConfirm, &confirm); err != nil {
+			return err
+		}
+
+		if !confirm {
+			_, _ = fmt.Fprintln(cmd.OutOrStdout(), "Operación cancelada.")
+			return nil
+		}
+
+		for _, sel := range selected {
+			parts := strings.SplitN(sel, " -> ", 2)
+			if len(parts) == 0 {
+				continue
+			}
+
+			url := parts[0]
+			if err := git.RemoveRepo(url); err != nil {
+				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Error removiendo %s: %v\n", url, err)
+			} else {
+				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Repositorio removido: %s\n", url)
+			}
+		}
+
+		return nil
+	},
+}
+
+func init() {
+	rootCmd.AddCommand(removeCmd)
+}

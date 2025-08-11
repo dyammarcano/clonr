@@ -7,6 +7,6 @@ type Repository struct {
 	URL         string `gorm:"uniqueIndex"`
 	Path        string
 	ClonedAt    time.Time
+	UpdatedAt   time.Time
 	LastChecked time.Time
-	Updated     bool
 }
