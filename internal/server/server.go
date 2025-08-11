@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"clonr/internal/db"
-	"clonr/internal/git"
+	"github.com/dyammarcano/clonr/internal/db"
+	"github.com/dyammarcano/clonr/internal/git"
 
 	"github.com/gin-gonic/gin"
 )

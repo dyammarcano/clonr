@@ -1,10 +1,11 @@
-module clonr
+module github.com/dyammarcano/clonr
 
 go 1.24
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/gin-gonic/gin v1.10.1
+	github.com/google/uuid v1.6.0
 	github.com/spf13/cobra v1.9.1
 	gorm.io/driver/sqlite v1.6.0
 	gorm.io/gorm v1.30.1

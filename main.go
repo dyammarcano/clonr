@@ -1,6 +1,6 @@
 package main
 
-import "clonr/cmd"
+import "github.com/dyammarcano/clonr/cmd"
 
 func main() {
 	cmd.Execute()

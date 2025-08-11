@@ -1,6 +1,6 @@
 package git
 
-import "clonr/internal/db"
+import "github.com/dyammarcano/clonr/internal/db"
 
 func RemoveRepo(url string) error {
 	initDB, err := db.InitDB()

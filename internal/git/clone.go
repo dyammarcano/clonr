@@ -2,22 +2,50 @@ package git
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 
-	"clonr/internal/db"
+	"github.com/dyammarcano/clonr/internal/db"
 
 	"github.com/spf13/cobra"
 )
 
-func CloneRepo(cmd *cobra.Command, url, path string) error {
+func CloneRepo(cmd *cobra.Command, args []string) error {
+	url := strings.TrimSpace(args[0])
+	if url == "" {
+		return fmt.Errorf("repository URL cannot be empty")
+	}
+
+	pathStr := args[1]
+
+	if pathStr == "" {
+		wd, err := os.Getwd()
+		if err != nil {
+			return fmt.Errorf("error getting current working directory: %w", err)
+		}
+
+		pathStr = wd
+	}
+
+	if _, err := os.Stat(pathStr); os.IsNotExist(err) {
+		if err := os.MkdirAll(pathStr, os.ModePerm); err != nil {
+			return fmt.Errorf("error creating directory %s: %w", pathStr, err)
+		}
+	}
+
 	initDB, err := db.InitDB()
 	if err != nil {
 		return fmt.Errorf("starting server: %w", err)
 	}
 
-	savePath := filepath.Join(path, extractRepoName(url))
+	absPath, err := filepath.Abs(pathStr)
+	if err != nil {
+		return fmt.Errorf("error determining absolute path: %w", err)
+	}
+
+	savePath := filepath.Join(absPath, extractRepoName(url))
 
 	runCmd := exec.Command("git", "clone", url, savePath)
 	output, err := runCmd.CombinedOutput()

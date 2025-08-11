@@ -1,10 +1,13 @@
 package db
 
 import (
+	"path/filepath"
 	"time"
 
-	"clonr/internal/model"
+	"github.com/dyammarcano/clonr/internal/model"
+	"github.com/dyammarcano/clonr/internal/params"
 
+	"github.com/google/uuid"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -14,7 +17,9 @@ type Database struct {
 }
 
 func InitDB() (*Database, error) {
-	db, err := gorm.Open(sqlite.Open("clonr.db"), &gorm.Config{})
+	path := filepath.Join(params.AppdataDir, "clonr.db")
+
+	db, err := gorm.Open(sqlite.Open(path), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
@@ -23,19 +28,17 @@ func InitDB() (*Database, error) {
 		return nil, err
 	}
 
-	return &Database{
-		DB: db,
-	}, nil
+	return &Database{DB: db}, nil
 }
 
 func (d *Database) SaveRepo(url, path string) error {
-	repo := model.Repository{
+	return d.Create(&model.Repository{
+		UID:       uuid.NewString(),
 		URL:       url,
 		Path:      path,
 		ClonedAt:  time.Now(),
 		UpdatedAt: time.Now(),
-	}
-	return d.Create(&repo).Error
+	}).Error
 }
 
 func (d *Database) GetAllRepos() ([]model.Repository, error) {

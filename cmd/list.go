@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"clonr/internal/git"
+	"github.com/dyammarcano/clonr/internal/git"
 
 	"github.com/spf13/cobra"
 )

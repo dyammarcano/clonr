@@ -3,8 +3,9 @@ package model
 import "time"
 
 type Repository struct {
-	ID          uint   `gorm:"primaryKey"`
-	URL         string `gorm:"uniqueIndex"`
+	ID          uint `gorm:"primaryKey"`
+	UID         string
+	URL         string
 	Path        string
 	ClonedAt    time.Time
 	UpdatedAt   time.Time
