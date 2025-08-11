@@ -36,8 +36,7 @@ func StartServer() error {
 
 		var results = make(map[string]string)
 		for _, repo := range repos {
-			err := git.PullRepo(repo.Path)
-			if err != nil {
+			if err := git.PullRepo(repo.Path); err != nil {
 				results[repo.URL] = "error: " + err.Error()
 			} else {
 				results[repo.URL] = "updated"
