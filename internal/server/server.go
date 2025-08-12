@@ -24,6 +24,7 @@ func StartServer() error {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
+
 		c.JSON(http.StatusOK, repos)
 	})
 
@@ -35,6 +36,7 @@ func StartServer() error {
 		}
 
 		var results = make(map[string]string)
+
 		for _, repo := range repos {
 			if err := git.PullRepo(repo.Path); err != nil {
 				results[repo.URL] = "error: " + err.Error()
@@ -42,6 +44,7 @@ func StartServer() error {
 				results[repo.URL] = "updated"
 			}
 		}
+
 		c.JSON(http.StatusOK, results)
 	})
 

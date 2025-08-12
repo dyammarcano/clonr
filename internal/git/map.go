@@ -24,30 +24,35 @@ func MapRepos(_ *cobra.Command, args []string) error {
 	}
 
 	found := 0
+
 	err = filepath.Walk(rootDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
+
 		if info.IsDir() && info.Name() == ".git" {
 			repoPath := filepath.Dir(path)
 			repoUrl := extractRepoURL(repoPath)
+
 			if repoUrl == "unknown" {
 				repoUrl = extractRepoURL2(repoPath)
 			}
 
-			dbErr := dbConn.SaveRepo(repoUrl, repoPath)
-			if dbErr == nil {
+			if err := dbConn.SaveRepo(repoUrl, repoPath); err == nil {
 				log.Printf("Added: %s\n", repoPath)
+
 				found++
 			}
 			// Don't recurse into .git
 			return filepath.SkipDir
 		}
+
 		return nil
 	})
 	if err != nil {
 		log.Printf("Error searching for git repos: %v\n", err)
 	}
+
 	log.Printf("%d repositories mapped.\n", found)
 
 	return nil

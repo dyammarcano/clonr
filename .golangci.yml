@@ -45,9 +45,9 @@ linters:
         - paralleltest
         - gochecknoinits
         - funlen
-        - wsl
         - cyclop
         - err113
+        - wsl
         - errorlint
         - exhaustruct
         - forcetypeassert
@@ -77,4 +77,3 @@ linters:
         - goconst
         - gocyclo
         - whitespace
-        - wsl_v5
