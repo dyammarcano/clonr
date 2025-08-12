@@ -13,7 +13,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func CloneRepo(cmd *cobra.Command, args []string) error {
+func CloneRepo(_ *cobra.Command, args []string) error {
+	if len(args) < 1 {
+		return fmt.Errorf("repository URL is required")
+	}
+
 	url := strings.TrimSpace(args[0])
 	if url == "" {
 		return fmt.Errorf("repository URL cannot be empty")
