@@ -13,15 +13,13 @@ Clonr is a command-line tool and server for managing Git repositories efficientl
 
 ## Installation
 
-1. Clone this repository:
-   ```sh
-   git clone https://github.com/dyammarcano/clonr.git
-   cd clonr
-   ```
-2. Build the project:
-   ```sh
-   go build -o clonr main.go
-   ```
+Install directly using Go (requires Go 1.24+):
+
+```sh
+go install github.com/dyammarcano/clonr@latest
+```
+
+This will place the `clonr` binary in your `$GOPATH/bin` or `$HOME/go/bin` directory. Make sure this directory is in your `PATH`.
 
 ## Usage
 
@@ -30,7 +28,7 @@ Clonr is a command-line tool and server for managing Git repositories efficientl
 Run the tool with various commands:
 
 ```sh
-./clonr [command] [flags]
+clonr [command] [flags]
 ```
 
 #### Available Commands
@@ -42,14 +40,14 @@ Run the tool with various commands:
 - `monitor`: Monitor repository status.
 - `server`: Start the API server.
 
-Use `./clonr [command] --help` for more details on each command.
+Use `clonr [command] --help` for more details on each command.
 
 ### Server Mode
 
 Start the server:
 
 ```sh
-./clonr server
+clonr server
 ```
 
 The server exposes an API for repository management (see API documentation if available).
@@ -83,4 +81,3 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 ## Contributing
 
 Contributions are welcome! Please open issues or submit pull requests.
-
