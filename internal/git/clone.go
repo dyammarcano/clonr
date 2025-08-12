@@ -2,6 +2,7 @@ package git
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -52,6 +53,7 @@ func CloneRepo(cmd *cobra.Command, args []string) error {
 	savePath := filepath.Join(absPath, extractRepoName(url))
 
 	runCmd := exec.Command("git", "clone", url, savePath)
+
 	output, err := runCmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("git clone error: %v - %s", err, string(output))
@@ -61,22 +63,25 @@ func CloneRepo(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("error saving repo to database: %w", err)
 	}
 
-	cmd.Printf("Cloned repo at %s\n", savePath)
+	log.Printf("Cloned repo at %s\n", savePath)
 
 	return nil
 }
 
 func PullRepo(path string) error {
 	cmd := exec.Command("git", "-C", path, "pull")
+
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("error git pull: %v, output: %s", err, string(output))
 	}
+
 	return nil
 }
 
 func extractRepoName(url string) string {
 	parts := strings.Split(url, "/")
 	last := parts[len(parts)-1]
+
 	return strings.TrimSuffix(last, ".git")
 }

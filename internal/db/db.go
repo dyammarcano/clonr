@@ -43,8 +43,8 @@ func (d *Database) SaveRepo(url, path string) error {
 
 func (d *Database) GetAllRepos() ([]model.Repository, error) {
 	var repos []model.Repository
-	err := d.Find(&repos).Error
-	return repos, err
+
+	return repos, d.Find(&repos).Error
 }
 
 func (d *Database) RemoveRepoByURL(url string) error {

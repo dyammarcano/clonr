@@ -14,6 +14,7 @@ var (
 func init() {
 	once.Do(func() {
 		var err error
+
 		AppdataDir, err = getAppDataDir("clonr")
 		if err != nil {
 			panic(err)
@@ -30,5 +31,6 @@ func getAppDataDir(appName string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	return filepath.Join(dir, appName), nil
 }
