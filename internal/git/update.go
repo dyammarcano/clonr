@@ -1,7 +1,7 @@
 package git
 
 import (
-	"fmt"
+	"log"
 	"os/exec"
 
 	"github.com/dyammarcano/clonr/internal/db"
@@ -11,13 +11,13 @@ import (
 func UpdateAllRepos() {
 	dbConn, err := db.InitDB()
 	if err != nil {
-		fmt.Println("Failed to open database:", err)
+		log.Printf("Failed to open database: %v\n", err)
 		return
 	}
 
 	repos, err := dbConn.GetAllRepos()
 	if err != nil {
-		fmt.Println("Failed to get repositories:", err)
+		log.Printf("Failed to get repositories: %v\n", err)
 		return
 	}
 
@@ -27,14 +27,14 @@ func UpdateAllRepos() {
 }
 
 func UpdateRepo(path string) error {
-	fmt.Printf("Updating %s... ", path)
+	log.Printf("Updating %s...", path)
 	cmd := exec.Command("git", "pull", "origin")
 	cmd.Dir = path
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		fmt.Printf("[pull error] %v: %s\n", err, string(output))
+		log.Printf("[pull error] %v: %s\n", err, string(output))
 		return err
 	}
-	fmt.Println("[updated]", string(output))
+	log.Printf("[updated] %s\n", output)
 	return nil
 }

@@ -2,6 +2,7 @@ package git
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -61,7 +62,7 @@ func CloneRepo(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("error saving repo to database: %w", err)
 	}
 
-	cmd.Printf("Cloned repo at %s\n", savePath)
+	log.Printf("Cloned repo at %s\n", savePath)
 
 	return nil
 }

@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/dyammarcano/clonr/internal/git"
@@ -22,7 +23,7 @@ files from disk, only removes the selected repositories from clonr's management.
 		}
 
 		if len(list) == 0 {
-			_, _ = fmt.Fprintln(cmd.OutOrStdout(), "No hay repositorios registrados.")
+			log.Printf("No hay repositorios registrados.\n")
 			return nil
 		}
 
@@ -43,7 +44,7 @@ files from disk, only removes the selected repositories from clonr's management.
 		}
 
 		if len(selected) == 0 {
-			_, _ = fmt.Fprintln(cmd.OutOrStdout(), "No se seleccionó ningún repositorio.")
+			log.Printf("No se seleccionó ningún repositorio.")
 			return nil
 		}
 
@@ -57,7 +58,7 @@ files from disk, only removes the selected repositories from clonr's management.
 		}
 
 		if !confirm {
-			_, _ = fmt.Fprintln(cmd.OutOrStdout(), "Operación cancelada.")
+			log.Printf("Operación cancelada.\n")
 			return nil
 		}
 
@@ -69,9 +70,9 @@ files from disk, only removes the selected repositories from clonr's management.
 
 			url := parts[0]
 			if err := git.RemoveRepo(url); err != nil {
-				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Error removiendo %s: %v\n", url, err)
+				log.Printf("Error removiendo %s: %v\n", url, err)
 			} else {
-				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Repositorio removido: %s\n", url)
+				log.Printf("Repositorio removido: %s\n", url)
 			}
 		}
 

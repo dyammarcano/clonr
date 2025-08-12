@@ -2,6 +2,7 @@ package git
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -10,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func MapRepos(cmd *cobra.Command, args []string) error {
+func MapRepos(_ *cobra.Command, args []string) error {
 	rootDir := "."
 
 	if len(args) > 0 {
@@ -36,7 +37,7 @@ func MapRepos(cmd *cobra.Command, args []string) error {
 
 			dbErr := dbConn.SaveRepo(repoUrl, repoPath)
 			if dbErr == nil {
-				cmd.Println("Added:", repoPath)
+				log.Printf("Added: %s\n", repoPath)
 				found++
 			}
 			// Don't recurse into .git
@@ -45,9 +46,9 @@ func MapRepos(cmd *cobra.Command, args []string) error {
 		return nil
 	})
 	if err != nil {
-		cmd.Println("Error searching for git repos:", err)
+		log.Printf("Error searching for git repos: %v\n", err)
 	}
-	cmd.Printf("%d repositories mapped.\n", found)
+	log.Printf("%d repositories mapped.\n", found)
 
 	return nil
 }
