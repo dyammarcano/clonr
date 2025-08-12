@@ -7,14 +7,11 @@ import (
 
 // mapCmd represents the map command
 var mapCmd = &cobra.Command{
-	Use:   "map",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Use:   "map [directory]",
+	Short: "Scan for existing Git repositories and add them to the clonr database.",
+	Long: `Recursively search the specified directory (or current directory if not specified) for Git repositories.
+For each found repository, add it to the clonr database if not already present. This allows you to manage and update
+repositories that were not originally cloned with clonr.`,
 	RunE: git.MapRepos,
 }
 

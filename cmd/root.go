@@ -10,13 +10,17 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "clonr",
-	Short: "clonr - git wrapper para clonar y monitorear repos",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "clonr - A Git wrapper to clone, monitor, and manage repositories.",
+	Long: `clonr is a command-line tool to efficiently clone, monitor, and manage multiple Git repositories.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Features:
+- Clone repositories
+- List registered repositories
+- Remove repositories from the registry
+- Monitor repositories via a built-in server
+- Map existing local repositories to the registry
+
+For more information on each command, use 'clonr [command] --help'.`,
 	Args: cobra.MaximumNArgs(2),
 	RunE: git.CloneRepo,
 }

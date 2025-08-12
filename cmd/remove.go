@@ -12,7 +12,9 @@ import (
 
 var removeCmd = &cobra.Command{
 	Use:   "remove",
-	Short: "Quitar repositorios del registro (sin borrar archivos)",
+	Short: "Remove repositories from the registry (does not delete files)",
+	Long: `Interactively select one or more repositories to remove from the clonr registry. This does not delete any 
+files from disk, only removes the selected repositories from clonr's management.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		list, err := git.ListRepos()
 		if err != nil {
