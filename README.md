@@ -1,6 +1,7 @@
 # Clonr [![Test](https://github.com/dyammarcano/clonr/actions/workflows/test.yml/badge.svg)](https://github.com/dyammarcano/clonr/actions/workflows/test.yml)
 
-Clonr is a command-line tool and server for managing Git repositories efficiently. It provides commands to clone, list, update, and remove repositories, as well as a server component for API-based management.
+Clonr is a command-line tool and server for managing Git repositories efficiently. It provides commands to clone, list, update, and remove repositories, as well as a server component for API-based
+management.
 
 ## Features
 

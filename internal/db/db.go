@@ -1,13 +1,14 @@
 package db
 
 import (
+	"crypto/sha256"
+	"fmt"
 	"path/filepath"
 	"time"
 
 	"github.com/dyammarcano/clonr/internal/model"
 	"github.com/dyammarcano/clonr/internal/params"
 
-	"github.com/google/uuid"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -33,7 +34,7 @@ func InitDB() (*Database, error) {
 
 func (d *Database) SaveRepo(url, path string) error {
 	return d.Create(&model.Repository{
-		UID:       uuid.NewString(),
+		UID:       fmt.Sprintf("%x", sha256.Sum256([]byte(url)))[:10],
 		URL:       url,
 		Path:      path,
 		ClonedAt:  time.Now(),
@@ -49,4 +50,14 @@ func (d *Database) GetAllRepos() ([]model.Repository, error) {
 
 func (d *Database) RemoveRepoByURL(url string) error {
 	return d.Where("url = ?", url).Delete(&model.Repository{}).Error
+}
+
+func (d *Database) UpdateRepoFields(uid, path string, updatedAt, lastChecked time.Time) error {
+	return d.Model(&model.Repository{}).
+		Where("uid = ?", uid).
+		Updates(map[string]any{
+			"path":         path,
+			"updated_at":   updatedAt,
+			"last_checked": lastChecked,
+		}).Error
 }

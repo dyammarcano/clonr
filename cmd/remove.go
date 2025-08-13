@@ -5,9 +5,9 @@ import (
 	"log"
 	"strings"
 
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/dyammarcano/clonr/internal/git"
 
-	"github.com/AlecAivazis/survey/v2"
 	"github.com/spf13/cobra"
 )
 

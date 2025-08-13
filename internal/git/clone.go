@@ -3,6 +3,7 @@ package git
 import (
 	"fmt"
 	"log"
+	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -18,9 +19,9 @@ func CloneRepo(_ *cobra.Command, args []string) error {
 		return fmt.Errorf("repository URL is required")
 	}
 
-	url := strings.TrimSpace(args[0])
-	if url == "" {
-		return fmt.Errorf("repository URL cannot be empty")
+	u, err := url.Parse(strings.TrimSpace(args[0]))
+	if err != nil {
+		return fmt.Errorf("error parsing repository URL: %w", err)
 	}
 
 	pathStr := "."
@@ -54,16 +55,16 @@ func CloneRepo(_ *cobra.Command, args []string) error {
 		return fmt.Errorf("error determining absolute path: %w", err)
 	}
 
-	savePath := filepath.Join(absPath, extractRepoName(url))
+	savePath := filepath.Join(absPath, extractRepoName(u.String()))
 
-	runCmd := exec.Command("git", "clone", url, savePath)
+	runCmd := exec.Command("git", "clone", u.String(), savePath)
 
 	output, err := runCmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("git clone error: %v - %s", err, string(output))
 	}
 
-	if err := initDB.SaveRepo(url, savePath); err != nil {
+	if err := initDB.SaveRepo(u.String(), savePath); err != nil {
 		return fmt.Errorf("error saving repo to database: %w", err)
 	}
 
