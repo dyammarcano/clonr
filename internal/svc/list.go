@@ -47,15 +47,16 @@ func GetRepoStats(repoPath string) (*model.StatsData, error) {
 		return nil, fmt.Errorf("error al obtener el historial de commits: %w", err)
 	}
 
-	stats := &model.StatsData{
-		CommitsByUser:     make(map[string]int),
-		FileModifications: make(map[string]int),
-		CommitsByWeekday:  make(map[time.Weekday]int),
-	}
+	// Use maps internally for counting
+	commitsByUser := make(map[string]int)
+	fileModifications := make(map[string]int)
+	commitsByWeekday := make(map[time.Weekday]int)
+
+	var linesAdded, linesDeleted int
 
 	err = commitIterator.ForEach(func(commit *object.Commit) error {
-		stats.CommitsByUser[commit.Author.Email]++
-		stats.CommitsByWeekday[commit.Author.When.Weekday()]++
+		commitsByUser[commit.Author.Email]++
+		commitsByWeekday[commit.Author.When.Weekday()]++
 
 		if commit.NumParents() == 0 {
 			return nil
@@ -72,9 +73,9 @@ func GetRepoStats(repoPath string) (*model.StatsData, error) {
 		}
 
 		for _, fs := range patch.Stats() {
-			stats.FileModifications[fs.Name]++
-			stats.LinesAdded += fs.Addition
-			stats.LinesDeleted += fs.Deletion
+			fileModifications[fs.Name]++
+			linesAdded += fs.Addition
+			linesDeleted += fs.Deletion
 		}
 
 		return nil
@@ -84,5 +85,23 @@ func GetRepoStats(repoPath string) (*model.StatsData, error) {
 		return nil, fmt.Errorf("error al iterar sobre los commits: %w", err)
 	}
 
+	// Convert maps to []Content for the final struct
+	stats := &model.StatsData{
+		CommitsByUser:     mapToContentSlice(commitsByUser),
+		FileModifications: mapToContentSlice(fileModifications),
+		LinesAdded:        linesAdded,
+		LinesDeleted:      linesDeleted,
+		CommitsByWeekday:  commitsByWeekday,
+	}
+
 	return stats, nil
+}
+
+// Helper to convert map[string]int → []Content
+func mapToContentSlice(m map[string]int) []model.Content {
+	slice := make([]model.Content, 0, len(m))
+	for name, count := range m {
+		slice = append(slice, model.Content{Item: name, Count: count})
+	}
+	return slice
 }

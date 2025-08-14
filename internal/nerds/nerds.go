@@ -14,6 +14,7 @@ import (
 	"github.com/dyammarcano/clonr/internal/params"
 	"github.com/dyammarcano/clonr/internal/svc"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // Tool represents a nerd tool with an ID and a display name
@@ -22,7 +23,7 @@ type Tool struct {
 	Name string
 }
 
-func Tools(cmd *cobra.Command, args []string) error {
+func Tools(_ *cobra.Command, _ []string) error {
 	// Step 1: List repositories
 	list, err := svc.ListRepos()
 	if err != nil {
@@ -79,7 +80,7 @@ func Tools(cmd *cobra.Command, args []string) error {
 		uid := extractBracketValue(repoSel)
 		repo := repos[uid]
 
-		log.Printf("📊 Generando estadísticas.")
+		log.Printf("Generando estadísticas.")
 		if err := RunStats(repo); err != nil {
 			log.Printf("❌ Error en %s: %v", repo.Path, err)
 		}
@@ -109,29 +110,33 @@ func RunStats(repo model.Repository) error {
 		return err
 	}
 
+	if viper.GetBool("json") {
+		data := stats.Bytes()
+		if len(data) == 0 {
+			return fmt.Errorf("no se pudieron generar estadísticas para el repositorio %s", repo.Path)
+		}
+		log.Printf("Estadísticas generadas: %s", string(data))
+
+		return nil
+	}
+
 	// --- Commits por usuario ---
 	log.Printf("--- Commits por usuario ---\n\n")
-	for user, count := range stats.CommitsByUser {
-		log.Printf("- %s: %d\n", user, count)
+	for idx := range stats.CommitsByUser {
+		log.Printf("- %s: %d commits\n", stats.CommitsByUser[idx].Item, stats.CommitsByUser[idx].Count)
 	}
 
 	// --- Archivos más modificados (Top 100) ---
 	log.Printf("--- Archivos más modificados (Top 100) ---\n\n")
 
-	fileStats := make([]struct {
-		name  string
-		count int
-	}, 0, len(stats.FileModifications))
+	fileStats := make([]model.Content, 0, len(stats.FileModifications))
 
-	for name, count := range stats.FileModifications {
-		fileStats = append(fileStats, struct {
-			name  string
-			count int
-		}{name, count})
+	for _, item := range stats.FileModifications {
+		fileStats = append(fileStats, model.Content{Item: item.Item, Count: item.Count})
 	}
 
 	sort.Slice(fileStats, func(i, j int) bool {
-		return fileStats[i].count > fileStats[j].count
+		return fileStats[i].Count > fileStats[j].Count
 	})
 
 	limit := 100
@@ -140,7 +145,7 @@ func RunStats(repo model.Repository) error {
 	}
 
 	for i := 0; i < limit; i++ {
-		log.Printf("- %s: %d modificaciones\n", fileStats[i].name, fileStats[i].count)
+		log.Printf("- %s: %d modificaciones\n", fileStats[i].Item, fileStats[i].Count)
 	}
 
 	// --- Líneas de código ---

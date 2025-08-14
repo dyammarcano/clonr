@@ -15,10 +15,14 @@ type Repository struct {
 	LastChecked time.Time
 }
 
-// StatsData almacena todos los datos de estadísticas del repositorio.
+type Content struct {
+	Item  string
+	Count int
+}
+
 type StatsData struct {
-	CommitsByUser     map[string]int
-	FileModifications map[string]int
+	CommitsByUser     []Content
+	FileModifications []Content
 	LinesAdded        int
 	LinesDeleted      int
 	CommitsByWeekday  map[time.Weekday]int
