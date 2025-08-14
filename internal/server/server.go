@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/dyammarcano/clonr/internal/db"
-	"github.com/dyammarcano/clonr/internal/git"
+	"github.com/dyammarcano/clonr/internal/svc"
 
 	"github.com/gin-gonic/gin"
 )
@@ -38,7 +38,7 @@ func StartServer() error {
 		var results = make(map[string]string)
 
 		for _, repo := range repos {
-			if err := git.PullRepo(repo.Path); err != nil {
+			if err := svc.PullRepo(repo.Path); err != nil {
 				results[repo.URL] = "error: " + err.Error()
 			} else {
 				results[repo.URL] = "updated"

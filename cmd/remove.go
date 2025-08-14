@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/dyammarcano/clonr/internal/git"
+	"github.com/dyammarcano/clonr/internal/svc"
 
 	"github.com/spf13/cobra"
 )
@@ -17,7 +17,7 @@ var removeCmd = &cobra.Command{
 	Long: `Interactively select one or more repositories to remove from the clonr registry. This does not delete any 
 files from disk, only removes the selected repositories from clonr's management.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		list, err := git.ListRepos()
+		list, err := svc.ListRepos()
 		if err != nil {
 			return err
 		}
@@ -69,7 +69,7 @@ files from disk, only removes the selected repositories from clonr's management.
 			}
 
 			url := parts[0]
-			if err := git.RemoveRepo(url); err != nil {
+			if err := svc.RemoveRepo(url); err != nil {
 				log.Printf("Error removiendo %s: %v\n", url, err)
 			} else {
 				log.Printf("Repositorio removido: %s\n", url)

@@ -3,7 +3,7 @@ package cmd
 import (
 	"os"
 
-	"github.com/dyammarcano/clonr/internal/git"
+	"github.com/dyammarcano/clonr/internal/svc"
 
 	"github.com/spf13/cobra"
 )
@@ -22,7 +22,7 @@ Features:
 
 For more information on each command, use 'clonr [command] --help'.`,
 	Args: cobra.MaximumNArgs(2),
-	RunE: git.CloneRepo,
+	RunE: svc.CloneRepo,
 }
 
 func Execute() {

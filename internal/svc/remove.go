@@ -1,4 +1,4 @@
-package git
+package svc
 
 import "github.com/dyammarcano/clonr/internal/db"
 

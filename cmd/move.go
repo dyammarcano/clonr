@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/dyammarcano/clonr/internal/git"
+	"github.com/dyammarcano/clonr/internal/svc"
 	"github.com/spf13/cobra"
 )
 
@@ -22,12 +22,12 @@ Example:
 			return fmt.Errorf("--dest is required")
 		}
 
-		repos, err := git.PrettiListRepos(false)
+		repos, err := svc.PrettiListRepos(false)
 		if err != nil {
 			return fmt.Errorf("failed to list repos: %w", err)
 		}
 
-		if err := git.MoveRepo(args[0], repos, destFolder); err != nil {
+		if err := svc.MoveRepo(args[0], repos, destFolder); err != nil {
 			return fmt.Errorf("failed to update database: %w", err)
 		}
 
