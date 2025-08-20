@@ -1,15 +1,15 @@
-package git
+package core
 
 import (
 	"log"
 	"os/exec"
 
-	"github.com/dyammarcano/clonr/internal/db"
+	"github.com/dyammarcano/clonr/internal/database"
 )
 
 // UpdateAllRepos pulls the latest changes for all repositories in the clonr database.
 func UpdateAllRepos() {
-	dbConn, err := db.InitDB()
+	dbConn, err := database.InitDB()
 	if err != nil {
 		log.Printf("Failed to open database: %v\n", err)
 		return

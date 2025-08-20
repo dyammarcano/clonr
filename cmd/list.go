@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/dyammarcano/clonr/internal/git"
+	"github.com/dyammarcano/clonr/internal/core"
 
 	"github.com/spf13/cobra"
 )
@@ -14,7 +14,7 @@ var listCmd = &cobra.Command{
 	Short: "List all registered Git repositories.",
 	Long:  `Display all Git repositories currently registered in the clonr database, showing their remote URL and local path.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		list, err := git.ListRepos()
+		list, err := core.ListRepos()
 		if err != nil {
 			return err
 		}

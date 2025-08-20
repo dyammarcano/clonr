@@ -1,0 +1,2 @@
+add command
+favorites

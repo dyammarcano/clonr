@@ -11,9 +11,7 @@ var monitorCmd = &cobra.Command{
 	Short: "Start the clonr server to monitor and manage repositories via API.",
 	Long: `Start the clonr built-in server. This allows you to monitor and manage registered repositories 
 via a web API or other integrations. Useful for automation, dashboards, or remote management.`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		return server.StartServer()
-	},
+	RunE: server.StartServer,
 }
 
 func init() {

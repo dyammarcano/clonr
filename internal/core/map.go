@@ -1,4 +1,4 @@
-package git
+package core
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/dyammarcano/clonr/internal/db"
+	"github.com/dyammarcano/clonr/internal/database"
 	"github.com/go-git/go-git/v5"
 	"github.com/spf13/cobra"
 )
@@ -18,7 +18,7 @@ func MapRepos(_ *cobra.Command, args []string) error {
 		rootDir = args[0]
 	}
 
-	dbConn, err := db.InitDB()
+	dbConn, err := database.InitDB()
 	if err != nil {
 		return fmt.Errorf("failed to open database: %v", err)
 	}

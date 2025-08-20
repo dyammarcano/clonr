@@ -1,26 +1,37 @@
-package git
+package core
 
 import (
 	"fmt"
 	"log"
+	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 
-	"github.com/dyammarcano/clonr/internal/db"
-
+	"github.com/dyammarcano/clonr/internal/database"
 	"github.com/spf13/cobra"
 )
+
+// if dest dir is a dot clones into the current dir, if not,
+// then clone into specified dir when dest dir not exists use default dir, saved in db
 
 func CloneRepo(_ *cobra.Command, args []string) error {
 	if len(args) < 1 {
 		return fmt.Errorf("repository URL is required")
 	}
 
-	url := strings.TrimSpace(args[0])
-	if url == "" {
-		return fmt.Errorf("repository URL cannot be empty")
+	uri, err := url.ParseRequestURI(args[0])
+	if err != nil {
+		return fmt.Errorf("invalid repository URL: %w", err)
+	}
+
+	if uri.Scheme != "http" && uri.Scheme != "https" {
+		return fmt.Errorf("invalid repository URL: %s", uri.String())
+	}
+
+	if uri.Host == "" {
+		return fmt.Errorf("invalid repository URL: %s", uri.String())
 	}
 
 	pathStr := "."
@@ -44,7 +55,7 @@ func CloneRepo(_ *cobra.Command, args []string) error {
 		}
 	}
 
-	initDB, err := db.InitDB()
+	initDB, err := database.InitDB()
 	if err != nil {
 		return fmt.Errorf("starting server: %w", err)
 	}
@@ -54,16 +65,16 @@ func CloneRepo(_ *cobra.Command, args []string) error {
 		return fmt.Errorf("error determining absolute path: %w", err)
 	}
 
-	savePath := filepath.Join(absPath, extractRepoName(url))
+	savePath := filepath.Join(absPath, extractRepoName(uri.String()))
 
-	runCmd := exec.Command("git", "clone", url, savePath)
+	runCmd := exec.Command("git", "clone", uri.String(), savePath)
 
 	output, err := runCmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("git clone error: %v - %s", err, string(output))
 	}
 
-	if err := initDB.SaveRepo(url, savePath); err != nil {
+	if err := initDB.SaveRepo(uri.String(), savePath); err != nil {
 		return fmt.Errorf("error saving repo to database: %w", err)
 	}
 

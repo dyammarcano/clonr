@@ -4,14 +4,15 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/dyammarcano/clonr/internal/db"
-	"github.com/dyammarcano/clonr/internal/git"
+	"github.com/dyammarcano/clonr/internal/core"
+	"github.com/dyammarcano/clonr/internal/database"
+	"github.com/spf13/cobra"
 
 	"github.com/gin-gonic/gin"
 )
 
-func StartServer() error {
-	initDB, err := db.InitDB()
+func StartServer(cmd *cobra.Command, args []string) error {
+	initDB, err := database.InitDB()
 	if err != nil {
 		return fmt.Errorf("starting server: %w", err)
 	}
@@ -38,7 +39,7 @@ func StartServer() error {
 		var results = make(map[string]string)
 
 		for _, repo := range repos {
-			if err := git.PullRepo(repo.Path); err != nil {
+			if err := core.PullRepo(repo.Path); err != nil {
 				results[repo.URL] = "error: " + err.Error()
 			} else {
 				results[repo.URL] = "updated"
