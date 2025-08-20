@@ -24,21 +24,16 @@ jobs:
         sudo apt-get install -y xorg-dev libgl1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev
         sudo apt-get install -y libasound2-dev libpulse-dev
 
-    - name: Install golangci-lint
-      run: |
-        curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $(go env GOPATH)/bin v2.4.0
-        golangci-lint --version
+    - name: Lint
+      uses: golangci/golangci-lint-action@v8
+      with:
+        version: v2.4.0
 
     - name: Build
       run: go build -v ./...
 
     - name: Test
       run: go test -race -p=1 ./... -v
-
-    - name: Lint
-      run: |
-        golangci-lint fmt
-        golangci-lint run ./...
 
   build-windows:
     runs-on: windows-latest
@@ -51,20 +46,13 @@ jobs:
         go-version: latest
         check-latest: true
 
-    - name: Install golangci-lint
-      run: |
-        curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $(go env GOPATH)/bin v2.4.0
-        golangci-lint --version
-      shell: bash
+    - name: Lint
+      uses: golangci/golangci-lint-action@v8
+      with:
+        version: v2.4.0
 
     - name: Build
       run: go build -v ./...
 
     - name: Test
       run: go test -race -p=1 ./... -v
-
-    - name: Lint
-      run: |
-        golangci-lint fmt
-        golangci-lint run ./...
-      shell: bash
