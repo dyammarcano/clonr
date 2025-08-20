@@ -1,12 +1,12 @@
-package git
+package core
 
 import (
-	"github.com/dyammarcano/clonr/internal/db"
+	"github.com/dyammarcano/clonr/internal/database"
 	"github.com/dyammarcano/clonr/internal/model"
 )
 
 func ListRepos() ([]model.Repository, error) {
-	initDB, err := db.InitDB()
+	initDB, err := database.InitDB()
 	if err != nil {
 		return nil, err
 	}

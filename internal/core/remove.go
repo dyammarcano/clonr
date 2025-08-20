@@ -1,9 +1,9 @@
-package git
+package core
 
-import "github.com/dyammarcano/clonr/internal/db"
+import "github.com/dyammarcano/clonr/internal/database"
 
 func RemoveRepo(url string) error {
-	initDB, err := db.InitDB()
+	initDB, err := database.InitDB()
 	if err != nil {
 		return err
 	}
