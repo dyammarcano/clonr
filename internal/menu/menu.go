@@ -51,9 +51,8 @@ func (m Model) Init() tea.Cmd {
 }
 
 // Update handles key presses and updates the model's state.
-func (m Model) Update(msgTea tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg := msgTea.(type) {
-	case tea.KeyMsg:
+func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if msg, ok := msg.(tea.KeyMsg); ok {
 		switch msg.String() {
 		case "ctrl+c", "q":
 			return m, tea.Quit
